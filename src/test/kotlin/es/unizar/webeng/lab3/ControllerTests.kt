@@ -1,6 +1,9 @@
 package es.unizar.webeng.lab3
 
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import io.mockk.justRun
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -12,11 +15,7 @@ import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
-import io.mockk.every
-import io.mockk.verify
-import io.mockk.justRun
 import java.util.Optional
-
 
 private val MANAGER_REQUEST_BODY = { name: String ->
     """
@@ -52,8 +51,8 @@ class ControllerTests {
         // Hint: POST is not idempotent - each call creates a new resource.
         // Think about what the controller does when saving an employee.
         // Consider how to mock the repository to return different results for multiple calls.
-        //TODO("Complete the mock setup for POST test")
-        
+        // TODO("Complete the mock setup for POST test")
+
         every {
             employeeRepository.save(any<Employee>())
         } answers {
@@ -61,7 +60,6 @@ class ControllerTests {
         } andThenAnswer {
             Employee("Mary", "Manager", 2)
         }
-
 
         mvc
             .post("/employees") {
@@ -76,7 +74,6 @@ class ControllerTests {
                     json(MANAGER_RESPONSE_BODY("Mary", 1))
                 }
             }
-        
 
         mvc
             .post("/employees") {
@@ -95,7 +92,7 @@ class ControllerTests {
         // VERIFY - COMPLETE ME!
         // Hint: What repository methods should be called for a POST operation?
         // What methods should NOT be called? Think about the difference between safe and unsafe operations.
-        //TODO("Complete the verification for POST test")
+        // TODO("Complete the verification for POST test")
         verify(exactly = 2) {
             employeeRepository.save(any<Employee>())
         }
@@ -107,7 +104,7 @@ class ControllerTests {
         // Hint: GET is safe and idempotent - it only reads data without side effects.
         // Look at the test expectations to understand what scenarios you need to mock.
         // Consider both successful and unsuccessful retrieval cases.
-        //TODO("Complete the mock setup for GET test")
+        // TODO("Complete the mock setup for GET test")
         every {
             employeeRepository.findById(1)
         } answers {
@@ -133,7 +130,6 @@ class ControllerTests {
         } answers {
             Optional.empty()
         }
-
 
         mvc.get("/employees/1").andExpect {
             status { isOk() }
@@ -150,7 +146,7 @@ class ControllerTests {
         // VERIFY - COMPLETE ME!
         // Hint: Since GET is safe, what repository methods should NOT be called?
         // Count how many times each method was called based on the test requests.
-        //TODO("Complete the verification for GET test")
+        // TODO("Complete the verification for GET test")
         verify(exactly = 2) {
             employeeRepository.findById(1)
         }
@@ -158,7 +154,6 @@ class ControllerTests {
         verify(exactly = 1) {
             employeeRepository.findById(2)
         }
-
     }
 
     @Test
@@ -167,7 +162,7 @@ class ControllerTests {
         // Hint: PUT is idempotent but not safe - it modifies state but repeated calls have the same effect.
         // Study the controller logic to understand what it does when an employee exists vs. doesn't exist.
         // Consider how to mock the repository to simulate both scenarios.
-        //TODO("Complete the mock setup for PUT test")
+        // TODO("Complete the mock setup for PUT test")
         every {
             employeeRepository.findById(1)
         } answers {
@@ -181,7 +176,6 @@ class ControllerTests {
         } answers {
             Employee("Mary", "Manager", 1)
         }
-
 
         mvc
             .put("/employees/1") {
@@ -214,15 +208,13 @@ class ControllerTests {
         // VERIFY - COMPLETE ME!
         // Hint: What repository methods should be called for PUT operations?
         // Think about the controller logic and how many times each method should be invoked.
-        //TODO("Complete the verification for PUT test")
+        // TODO("Complete the verification for PUT test")
         verify(exactly = 2) {
             employeeRepository.findById(1)
         }
         verify(exactly = 2) {
             employeeRepository.save(any<Employee>())
-        }   
-              
-
+        }
     }
 
     @Test
@@ -231,7 +223,7 @@ class ControllerTests {
         // Hint: DELETE is idempotent but not safe - it modifies state but repeated calls have the same effect.
         // Look at the controller implementation to see what repository method it calls.
         // Consider how to mock a method that doesn't return a value.
-        //TODO("Complete the mock setup for DELETE test")
+        // TODO("Complete the mock setup for DELETE test")
 
         every {
             employeeRepository.findById(1)
@@ -240,7 +232,6 @@ class ControllerTests {
         } andThenAnswer {
             Optional.empty()
         }
-
 
         justRun {
             employeeRepository.deleteById(1)
@@ -257,7 +248,7 @@ class ControllerTests {
         // VERIFY
         // Hint: What repository methods should be called for DELETE operations?
         // What methods should NOT be called? Think about the nature of DELETE operations.
-        //TODO("Complete the verification for DELETE test")
+        // TODO("Complete the verification for DELETE test")
 
         verify(exactly = 2) {
             employeeRepository.deleteById(1)
