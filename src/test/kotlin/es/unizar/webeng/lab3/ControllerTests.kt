@@ -147,7 +147,7 @@ class ControllerTests {
         // Hint: Since GET is safe, what repository methods should NOT be called?
         // Count how many times each method was called based on the test requests.
         // TODO("Complete the verification for GET test")
-        verify(exactly = 2) {
+        verify(exactly = 1) {
             employeeRepository.findById(1)
         }
 

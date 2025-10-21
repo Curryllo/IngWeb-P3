@@ -18,6 +18,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.CacheEvict
+
 @RestController
 class EmployeeController(
     private val repository: EmployeeRepository,
@@ -37,6 +40,7 @@ class EmployeeController(
         ],
     )
     @GetMapping("/employees")
+    @Cacheable("employeesAll")
     fun all(): Iterable<Employee> = repository.findAll()
 
     @Operation(summary = "Create a new employee", description = "Creates a new employee with the provided data")
@@ -54,6 +58,7 @@ class EmployeeController(
         ],
     )
     @PostMapping("/employees")
+    @CacheEvict(value = ["employeesAll"], allEntries = true)
     fun newEmployee(
         @RequestBody newEmployee: Employee,
     ): ResponseEntity<Employee> {
@@ -81,6 +86,7 @@ class EmployeeController(
         ],
     )
     @GetMapping("/employees/{id}")
+    @Cacheable("employees", key = "#id")
     fun one(
         @PathVariable id: Long,
     ): Employee = repository.findById(id).orElseThrow { EmployeeNotFoundException(id) }
@@ -105,6 +111,7 @@ class EmployeeController(
         ],
     )
     @PutMapping("/employees/{id}")
+    @CacheEvict(value = ["employeesAll"], allEntries = true)
     fun replaceEmployee(
         @RequestBody newEmployee: Employee,
         @PathVariable id: Long,
@@ -145,6 +152,7 @@ class EmployeeController(
         ],
     )
     @DeleteMapping("/employees/{id}")
+    @CacheEvict(value = ["employeesAll"], allEntries = true)
     fun deleteEmployee(
         @PathVariable id: Long,
     ): ResponseEntity<Void> {
