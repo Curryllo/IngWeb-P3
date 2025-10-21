@@ -12,13 +12,47 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+
 @RestController
 class EmployeeController(
     private val repository: EmployeeRepository,
 ) {
+    @Operation(summary = "Get all employees", description = "Returns a list of all employees")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [Content(mediaType = "application/json")],
+            ),
+            ApiResponse(
+                responseCode = "500",
+                description = "Internal server error",
+            ),
+        ],
+    )
     @GetMapping("/employees")
     fun all(): Iterable<Employee> = repository.findAll()
 
+    @Operation(summary = "Create a new employee", description = "Creates a new employee with the provided data")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201",
+                description = "Employee created successfully",
+                content = [Content(mediaType = "application/json")],
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid input data",
+            ),
+        ],
+    )
     @PostMapping("/employees")
     fun newEmployee(
         @RequestBody newEmployee: Employee,
@@ -32,11 +66,44 @@ class EmployeeController(
         return ResponseEntity.created(location).body(employee)
     }
 
+    @Operation(summary = "Get an employee by ID", description = "Returns the employee with the specified ID")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+                content = [Content(mediaType = "application/json")],
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Employee not found",
+            ),
+        ],
+    )
     @GetMapping("/employees/{id}")
     fun one(
         @PathVariable id: Long,
     ): Employee = repository.findById(id).orElseThrow { EmployeeNotFoundException(id) }
 
+    @Operation(summary = "Update an existing employee", description = "Updates the employee with the specified ID or creates a new one if it doesn't exist")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Employee updated successfully",
+                content = [Content(mediaType = "application/json")],
+            ),
+            ApiResponse(
+                responseCode = "201",
+                description = "Employee created successfully",
+                content = [Content(mediaType = "application/json")],
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid input data",
+            ),
+        ],
+    )
     @PutMapping("/employees/{id}")
     fun replaceEmployee(
         @RequestBody newEmployee: Employee,
@@ -64,6 +131,19 @@ class EmployeeController(
         return ResponseEntity.status(status).header("Content-Location", location).body(body)
     }
 
+    @Operation(summary = "Delete an employee", description = "Deletes the employee with the specified ID")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                description = "Employee deleted successfully",
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Employee not found",
+            ),
+        ],
+    )
     @DeleteMapping("/employees/{id}")
     fun deleteEmployee(
         @PathVariable id: Long,

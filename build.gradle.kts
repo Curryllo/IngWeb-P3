@@ -23,6 +23,8 @@ dependencies {
     implementation(libs.spring.boot.starter.thymeleaf)
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.kotlin.reflect)
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+
 
     runtimeOnly(libs.h2database.h2)
 
