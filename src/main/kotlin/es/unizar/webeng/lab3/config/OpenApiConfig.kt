@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class OpenApiConfig {
-
     @Bean
     fun customOpenAPI(): OpenAPI =
         OpenAPI()
@@ -15,6 +14,6 @@ class OpenApiConfig {
                 Info()
                     .title("Employee Management API")
                     .version("1.0")
-                    .description("API demonstrating HTTP method safety and idempotency.")
+                    .description("API demonstrating HTTP method safety and idempotency."),
             )
 }

@@ -1,5 +1,11 @@
 package es.unizar.webeng.lab3
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -11,15 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-
-import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.responses.ApiResponse
-import io.swagger.v3.oas.annotations.responses.ApiResponses
-import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.ExampleObject
-
-import org.springframework.cache.annotation.Cacheable
-import org.springframework.cache.annotation.CacheEvict
 
 @RestController
 class EmployeeController(
@@ -91,7 +88,10 @@ class EmployeeController(
         @PathVariable id: Long,
     ): Employee = repository.findById(id).orElseThrow { EmployeeNotFoundException(id) }
 
-    @Operation(summary = "Update an existing employee", description = "Updates the employee with the specified ID or creates a new one if it doesn't exist")
+    @Operation(
+        summary = "Update an existing employee",
+        description = "Updates the employee with the specified ID or creates a new one if it doesn't exist",
+    )
     @ApiResponses(
         value = [
             ApiResponse(

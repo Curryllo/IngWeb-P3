@@ -25,11 +25,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("org.springframework.boot:spring-boot-starter-cache")
-
-
-
     runtimeOnly(libs.h2database.h2)
-
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.ninjasquad.springmocck)
 }
